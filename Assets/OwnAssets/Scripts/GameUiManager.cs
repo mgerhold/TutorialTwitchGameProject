@@ -30,12 +30,12 @@ public class GameUiManager : MonoBehaviour
     private void SetupDictionaries()
     {
         entryPrefabs = new Dictionary<Teams, GameObject>() {
-            { Teams.Blue, TeamBlueEntryPrefab },
-            { Teams.Red, TeamRedEntryPrefab },
+            { Teams.Blau, TeamBlueEntryPrefab },
+            { Teams.Rot, TeamRedEntryPrefab },
         };
         teamParents = new Dictionary<Teams, Transform>() {
-            { Teams.Blue, TeamBlueParent },
-            { Teams.Red, TeamRedParent },
+            { Teams.Blau, TeamBlueParent },
+            { Teams.Rot, TeamRedParent },
         };
     }
 

@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     bool gameStarted = false;
     readonly int maxTeamMembers = 10;
 
-    Dictionary<Teams, HashSet<Player>> playerLists = new Dictionary<Teams, HashSet<Player>>() { { Teams.Red, new HashSet<Player>() }, { Teams.Blue, new HashSet<Player>() } };
+    Dictionary<Teams, HashSet<Player>> playerLists = new Dictionary<Teams, HashSet<Player>>() { { Teams.Rot, new HashSet<Player>() }, { Teams.Blau, new HashSet<Player>() } };
 
     private void Awake()
     {
