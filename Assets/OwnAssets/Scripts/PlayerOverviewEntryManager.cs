@@ -16,15 +16,7 @@ public class PlayerOverviewEntryManager : MonoBehaviour
         playerName = _player.twitchName;
         PlayerNameText.text = playerName;
 
-        switch (_player.team)
-        {
-            case Teams.Blau:
-                TeamColorImage.color = SharedVisualData.Instance.TeamBlueColor;
-                break;
-            case Teams.Rot:
-                TeamColorImage.color = SharedVisualData.Instance.TeamRedColor;
-                break;
-        }
+        TeamColorImage.color = SharedVisualData.Instance.teamColors[_player.team];        
 
         SetPlayerDead(_player);
         SetUnitSprite(_player);
@@ -37,6 +29,6 @@ public class PlayerOverviewEntryManager : MonoBehaviour
 
     public void SetUnitSprite(Player _player)
     {
-        UnitImage.sprite = SharedVisualData.Instance.UnitSpites[(int)_player.unitType];
+        UnitImage.sprite = SharedVisualData.Instance.UnitSprites[(int)_player.unitType];
     }
 }

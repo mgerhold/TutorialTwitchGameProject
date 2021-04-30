@@ -29,14 +29,14 @@ public class GameManager : MonoBehaviour
     bool gameStarted = false;
     readonly int maxTeamMembers = 10;
 
-    Dictionary<Teams, HashSet<Player>> playerLists = new Dictionary<Teams, HashSet<Player>>() { { Teams.Rot, new HashSet<Player>() }, { Teams.Blau, new HashSet<Player>() } };
+    Dictionary<Teams, HashSet<Player>> playerLists = new Dictionary<Teams, HashSet<Player>>() { { Teams.Red, new HashSet<Player>() }, { Teams.Blue, new HashSet<Player>() } };
 
     private void Awake()
     {
         LoadingScreenManager.Instance.onGameStarted += GameStarted;
-        TwitchChatCommunicationManager.Instance.onChangeUnitCommandReceived += onChangeUnitReceived;
-        TwitchChatCommunicationManager.Instance.onChooseTeamCommandReceived += onChooseTeamReceived;
-        TwitchChatCommunicationManager.Instance.onVoteCameraPosCommandReceived += onCameraVoteReceived;
+        TwitchChatCommunicationManager.Instance.onChangeUnitCommandReceived += OnChangeUnitReceived;
+        TwitchChatCommunicationManager.Instance.onChooseTeamCommandReceived += OnChooseTeamReceived;
+        TwitchChatCommunicationManager.Instance.onVoteCameraPosCommandReceived += OnCameraVoteReceived;
     }
 
     private void Start()
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         gameStarted = _started;
     }
 
-    private void onChangeUnitReceived(TwitchUser _user, UnitType _unitType)
+    private void OnChangeUnitReceived(TwitchUser _user, UnitType _unitType)
     {
         Player player = playerLists.SelectMany(pair => pair.Value).FirstOrDefault(teamMember => teamMember.twitchName == _user.DisplayName);
 
@@ -70,13 +70,13 @@ public class GameManager : MonoBehaviour
         TwitchChatCommunicationManager.Instance.SendChatMessage($"{_user.DisplayName} hat Einheit { _unitType} gewählt.");
     }
 
-    private void onChooseTeamReceived(TwitchUser _user, Teams _team)
+    private void OnChooseTeamReceived(TwitchUser _user, Teams _team)
     {
         if (!gameStarted)
             return;
 
         //Ist der User Bereits in einem team
-        if (playerLists.Any(pair => pair.Value.Any(teamMember => teamMember.twitchName == _user.DisplayName)))
+        if (playerLists.SelectMany(pair => pair.Value).Any(teamMember => teamMember.twitchName == _user.DisplayName))        
         {
             TwitchChatCommunicationManager.Instance.SendChatMessage($"{_user.DisplayName}, du gehörst bereits einem Team an!");
             return;
@@ -91,14 +91,17 @@ public class GameManager : MonoBehaviour
 
         Player player = new Player() { twitchName = _user.DisplayName, isDead = true, isSub = _user.IsSub, team = _team, twitchID = Convert.ToInt32(_user.Id), unitType = (UnitType)UnityEngine.Random.Range(0, 3) };
 
-        playerLists[_team].Add(player);
+        if (!playerLists[_team].Add(player))
+        {
+            Debug.LogError($"Player {player.twitchName} already inside the team");
+        }
 
         TwitchChatCommunicationManager.Instance.SendChatMessage($"{_user.DisplayName} ist dem Team { _team } beigetreten.");
 
         onPlayerCreated?.Invoke(player);
     }
 
-    private void onCameraVoteReceived(TwitchUser _user, CameraPositions _cameraPositions)
+    private void OnCameraVoteReceived(TwitchUser _user, CameraPositions _cameraPositions)
     {
         TwitchChatCommunicationManager.Instance.SendChatMessage($"{_user.DisplayName} hat für Kamera { _cameraPositions } gevotet.");
     }
@@ -106,8 +109,8 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         LoadingScreenManager.Instance.onGameStarted -= GameStarted;
-        TwitchChatCommunicationManager.Instance.onChangeUnitCommandReceived -= onChangeUnitReceived;
-        TwitchChatCommunicationManager.Instance.onChooseTeamCommandReceived -= onChooseTeamReceived;
-        TwitchChatCommunicationManager.Instance.onVoteCameraPosCommandReceived -= onCameraVoteReceived;
+        TwitchChatCommunicationManager.Instance.onChangeUnitCommandReceived -= OnChangeUnitReceived;
+        TwitchChatCommunicationManager.Instance.onChooseTeamCommandReceived -= OnChooseTeamReceived;
+        TwitchChatCommunicationManager.Instance.onVoteCameraPosCommandReceived -= OnCameraVoteReceived;
     }
 }

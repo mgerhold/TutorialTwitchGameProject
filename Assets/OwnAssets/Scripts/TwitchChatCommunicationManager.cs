@@ -7,7 +7,7 @@ using UnityEngine;
 
 public enum UnitType { Heiler, Tank, Bogenschuetze };
 public enum CameraPositions { RotesTor, Mitte, Uebersicht, BlauesTor };
-public enum Teams { Blau, Rot };
+public enum Teams { Blue, Red };
 
 public class TwitchChatCommunicationManager : MonoBehaviour
 {

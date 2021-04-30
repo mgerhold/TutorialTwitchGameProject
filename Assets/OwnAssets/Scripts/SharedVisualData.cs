@@ -19,10 +19,9 @@ public class SharedVisualData : MonoBehaviour
         }
     }
 
-    public Color TeamRedColor;
-    public Color TeamBlueColor;
+    public Dictionary<Teams, Color> teamColors = new Dictionary<Teams, Color>();
 
-    public List<Sprite> UnitSpites;
+    public List<Sprite> UnitSprites;
 
     public Color DeadPlayerNameColor;
     public Color AlivePlayerNameColor;
